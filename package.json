@@ -1,0 +1,19 @@
+{
+  "name": "detalhes-demanda",
+  "version": "1.0.0",
+  "description": "Tela de Detalhes da Demanda - PI-II-TIME-11 - Aluno 5",
+  "author": "Gabriel Lopes Londe Rodrigues",
+  "license": "ISC",
+  "type": "module",
+  "main": "servidor.js",
+  "scripts": {
+    "dev": "nodemon servidor.js",
+    "start": "node servidor.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

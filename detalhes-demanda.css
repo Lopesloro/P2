@@ -27,37 +27,95 @@
    uma unica linha aqui embaixo.
 
    Paleta combinada pelo grupo:
-     #000000  preto    fundo da pagina
-     #14213D  azul     cards, cabecalho e campos
+     #000000  preto    textos de maior contraste
+     #14213D  azul     cabecalho, titulos e textos
      #FCA311  laranja  cor de acao e destaque
-     #E5E5E5  cinza    textos secundarios
-     #FFFFFF  branco   textos principais
+     #E5E5E5  cinza    fundo da pagina
+     #FFFFFF  branco   fundo dos cards e dos campos
 
    Foram acrescentadas duas cores de apoio, verde e vermelho, porque a
    paleta original nao permitia diferenciar uma confirmacao de um problema.
+
+   OBSERVACAO SOBRE A TROCA DE TEMA
+
+   Esta tela nasceu com fundo preto. As outras quatro telas do sistema
+   (login, dashboard, listagem e cadastro) foram feitas com fundo claro,
+   todas usando background-color: #E5E5E5. Uma tela escura no meio de
+   quatro claras quebrava a unidade visual do sistema.
+
+   As cinco cores do grupo continuam exatamente as mesmas. O que mudou foi
+   onde cada uma e aplicada: o cinza #E5E5E5, que antes pintava textos
+   secundarios, passou a ser o fundo da pagina; o azul #14213D, que antes
+   era fundo de card, passou a ser a cor do texto e do cabecalho; e o
+   branco, que era a cor do texto, passou a ser o fundo dos cards.
    --------------------------------------------------------------------------- */
 :root {
+  /*
+     Avisa o navegador que o sistema usa tema claro. Sem esta linha, o
+     navegador desenha em tom escuro as pecas que ele mesmo monta: a
+     barra de rolagem e o menu que abre nas caixas de selecao.
+  */
+  color-scheme: light;
+
   --cor-preto: #000000;
   --cor-azul: #14213d;
   --cor-laranja: #fca311;
+  --cor-cinza: #e5e5e5;
   --cor-branco: #ffffff;
 
-  /* Tons derivados do azul, para dar profundidade a interface escura */
-  --fundo-pagina: var(--cor-preto);
-  --fundo-card: #0c1526;
-  --fundo-campo: #0a1020;
-  --borda: #223354;
-  --borda-clara: #2e4270;
+  /* Fundos. O mesmo #E5E5E5 usado pelas outras telas do sistema. */
+  --fundo-pagina: var(--cor-cinza);
+  --fundo-card: var(--cor-branco);
+  --fundo-campo: var(--cor-branco);
+  --borda: #d2d8e2;
+  --borda-clara: #b9c2d1;
 
-  --texto-principal: var(--cor-branco);
-  --texto-secundario: #9fadc4;
-  --texto-apagado: #6b7a92;
+  /* Textos. O azul do grupo e escuro o bastante para ler sobre o branco. */
+  --texto-principal: var(--cor-azul);
+  --texto-secundario: #55637d;
+  --texto-apagado: #7d8aa0;
 
+  /*
+     A cor de acao aparece de duas formas, e no tema claro as duas nao
+     podem ser a mesma. Como fundo de botao o laranja funciona bem. Como
+     texto sobre o branco ele fica ilegivel: o contraste cai para cerca de
+     2 para 1, quando o minimo recomendado para leitura e 4,5 para 1.
+     Por isso existe uma segunda variavel, mais escura, usada em links.
+  */
   --cor-acao: var(--cor-laranja);
+  --cor-acao-escura: #d98a0b;
+  --cor-acao-texto: #8a5800;
   --texto-sobre-acao: #1a1200;
 
-  --cor-sucesso: #2fbf71;
-  --cor-erro: #ef4d4d;
+  --cor-sucesso: #1e8f52;
+  --cor-erro: #c62d2d;
+
+  /*
+     Cores das etiquetas de status e de prioridade.
+
+     Todas foram escolhidas escuras o bastante para serem lidas sobre o
+     fundo branco do card. O fundo suave e a borda de cada etiqueta sao
+     derivados da propria cor, mais abaixo, com color-mix.
+  */
+  --cor-aberta: #1f6feb;
+  --cor-em-andamento: #8a5800;
+  --cor-em-revisao: #7c3aed;
+  --cor-concluida: var(--cor-sucesso);
+  --cor-cancelada: #6b7a92;
+
+  --cor-critica: var(--cor-erro);
+  --cor-alta: #c2610a;
+  --cor-media: #8a6a00;
+  --cor-baixa: #55637d;
+
+  /* Fundos suaves das etiquetas e dos avisos, derivados das cores acima. */
+  --fundo-acao-suave: rgba(252, 163, 17, 0.16);
+  --borda-acao-suave: rgba(252, 163, 17, 0.45);
+  --fundo-erro-suave: rgba(198, 45, 45, 0.1);
+  --borda-erro-suave: rgba(198, 45, 45, 0.4);
+
+  /* Sombra leve, que separa o card branco do fundo cinza. */
+  --sombra-card: 0 1px 3px rgba(20, 33, 61, 0.08);
 
   /* Espacamentos. Usar sempre esses valores mantem o alinhamento
      das telas do grupo igual. */
@@ -83,6 +141,7 @@
 
   --largura-conteudo: 1180px;
 }
+
 
 /*
   Reinicio basico.
@@ -133,10 +192,16 @@ a:hover {
    2. ELEMENTOS COMUNS A VARIAS TELAS
    --------------------------------------------------------------------------- */
 
-/* ----- Cabecalho ----- */
+/* ----- Cabecalho -----
+
+   A barra azul #14213D com texto branco e o mesmo desenho usado pelo
+   dashboard e pela listagem do sistema. Como esta barra e escura e o
+   resto da pagina e claro, as cores de texto dentro dela sao declaradas
+   aqui, e nao herdadas das variaveis gerais. */
 .cabecalho {
-  background-color: var(--fundo-card);
-  border-bottom: 1px solid var(--borda);
+  background-color: var(--cor-azul);
+  color: var(--cor-branco);
+  box-shadow: 0 2px 8px rgba(20, 33, 61, 0.15);
 
   /* position: sticky mantem o cabecalho visivel enquanto a pagina rola */
   position: sticky;
@@ -178,19 +243,22 @@ a:hover {
 .cabecalho__link {
   padding: var(--espaco-2) var(--espaco-3);
   border-radius: var(--canto-pequeno);
-  color: var(--texto-secundario);
+
+  /* Branco levemente apagado: legivel sobre o azul, porem mais discreto
+     que o link da tela em que o usuario esta. */
+  color: rgba(255, 255, 255, 0.75);
   font-weight: 600;
 }
 
 .cabecalho__link:hover {
-  background-color: var(--cor-azul);
-  color: var(--texto-principal);
+  background-color: rgba(255, 255, 255, 0.12);
+  color: var(--cor-branco);
   text-decoration: none;
 }
 
 /* Marca em qual tela o usuario esta */
 .cabecalho__link--ativo {
-  background-color: var(--cor-azul);
+  background-color: rgba(255, 255, 255, 0.12);
   color: var(--cor-acao);
 }
 
@@ -211,7 +279,7 @@ a:hover {
 
 .cabecalho__usuario-perfil {
   font-size: var(--texto-pequeno);
-  color: var(--texto-secundario);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Circulo laranja com a inicial do nome */
@@ -289,6 +357,9 @@ a:hover {
   border: 1px solid var(--borda);
   border-radius: var(--canto-medio);
   padding: var(--espaco-5);
+
+  /* Sombra leve: separa o card branco do fundo cinza da pagina. */
+  box-shadow: var(--sombra-card);
 }
 
 .card__titulo {
@@ -332,7 +403,7 @@ a:hover {
 }
 
 .botao--principal:hover {
-  background-color: #d98a0b;
+  background-color: var(--cor-acao-escura);
 }
 
 /* Botao secundario: acoes de apoio */
@@ -354,7 +425,7 @@ a:hover {
 }
 
 .botao--perigo:hover {
-  background-color: rgba(239, 77, 77, 0.12);
+  background-color: var(--fundo-erro-suave);
 }
 
 /* ----- Campo de texto ----- */
@@ -432,17 +503,31 @@ a:hover {
   background-color: currentColor;
 }
 
-.etiqueta--em-andamento {
-  color: var(--cor-acao);
-  background-color: rgba(252, 163, 17, 0.12);
-  border-color: rgba(252, 163, 17, 0.35);
+/*
+   O fundo e a borda de cada etiqueta saem da propria cor do texto.
+
+   currentColor e a cor de texto do elemento, definida pelas classes logo
+   abaixo. O color-mix mistura essa cor com transparente: 14% dela vira o
+   fundo suave e 40% vira a borda. Assim cada etiqueta declara so a sua
+   cor, em uma linha, em vez de repetir a mesma cor tres vezes.
+*/
+.etiqueta {
+  background-color: color-mix(in srgb, currentColor 14%, transparent);
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
 }
 
-.etiqueta--critica {
-  color: var(--cor-erro);
-  background-color: rgba(239, 77, 77, 0.12);
-  border-color: rgba(239, 77, 77, 0.35);
-}
+/* Status. Agora que a tela muda de status, todos os cinco precisam existir. */
+.etiqueta--aberta { color: var(--cor-aberta); }
+.etiqueta--em-andamento { color: var(--cor-em-andamento); }
+.etiqueta--em-revisao { color: var(--cor-em-revisao); }
+.etiqueta--concluida { color: var(--cor-concluida); }
+.etiqueta--cancelada { color: var(--cor-cancelada); }
+
+/* Prioridade */
+.etiqueta--critica { color: var(--cor-critica); }
+.etiqueta--alta { color: var(--cor-alta); }
+.etiqueta--media { color: var(--cor-media); }
+.etiqueta--baixa { color: var(--cor-baixa); }
 
 /* O tipo da demanda tem aparencia neutra, sem bolinha */
 .etiqueta--tipo {
@@ -730,4 +815,73 @@ a:hover {
   .ficha__valor {
     text-align: left;
   }
+}
+
+
+/* ---------------------------------------------------------------------------
+   ELEMENTOS QUE SURGIRAM COM O BACKEND
+
+   Antes a tela era so aparencia e nao precisava dizer nada ao usuario.
+   Agora ela salva comentarios e muda status, entao precisa confirmar o que
+   deu certo e explicar o que deu errado.
+   --------------------------------------------------------------------------- */
+
+/*
+   Faz o atributo hidden do HTML realmente esconder o elemento.
+
+   O navegador ja tem uma regra propria para isso, mas qualquer display
+   escrito por nos, como o display: flex da classe .acoes, tem prioridade
+   sobre ela. O resultado seria uma secao marcada como hidden continuando
+   visivel. O !important esta aqui de proposito, porque esta regra precisa
+   vencer o display de qualquer classe.
+*/
+[hidden] {
+  display: none !important;
+}
+
+/* Faixa de aviso no topo da tela */
+.aviso {
+  padding: var(--espaco-3) var(--espaco-4);
+  border-radius: var(--canto-pequeno);
+  margin-bottom: var(--espaco-4);
+  font-size: var(--texto-normal);
+
+  /* Mesma tecnica das etiquetas: fundo e borda saem da cor do texto. */
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.aviso--erro {
+  color: var(--cor-erro);
+}
+
+.aviso--sucesso {
+  color: var(--cor-sucesso);
+}
+
+/* Estado inicial: escondido ate haver o que dizer */
+.aviso--escondido {
+  display: none;
+}
+
+/*
+   Mensagem de erro logo abaixo do campo.
+
+   Fica ao lado do campo que causou o problema, e nao so no topo da tela,
+   porque assim quem esta preenchendo ve o aviso sem precisar rolar a
+   pagina de volta.
+*/
+.campo__erro {
+  font-size: var(--texto-pequeno);
+  color: var(--cor-erro);
+  margin-top: var(--espaco-1);
+
+  /* Vazio por padrao, entao nao ocupa espaco ate ter texto */
+  min-height: 1em;
+}
+
+/* Botao ocupado ou indisponivel */
+.botao:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }

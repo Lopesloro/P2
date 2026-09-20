@@ -1,0 +1,11 @@
+# Pasta criada pelo npm install. E pesada e pode ser recriada a qualquer
+# momento com o proprio npm install, entao nao vai para o repositorio.
+node_modules/
+
+# Arquivos criados automaticamente pelo sistema operacional.
+.DS_Store
+Thumbs.db
+
+# Pastas de configuracao pessoal dos editores.
+.vscode/
+.idea/
