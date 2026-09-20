@@ -5,10 +5,10 @@
   "author": "Gabriel Lopes Londe Rodrigues",
   "license": "ISC",
   "type": "module",
-  "main": "servidor.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon servidor.js",
-    "start": "node servidor.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "dependencies": {
     "express": "^5.2.1"

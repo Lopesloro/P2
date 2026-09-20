@@ -1,220 +1,125 @@
 <!--
-  ===========================================================================
-  Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+  Autor do arquivo: Gabriel Lopes Londe Rodrigues
+  Tela de Detalhes da Demanda - PI-II-TIME-11
 
-  Projeto Integrador II - Engenharia de Software
-  Equipe: PI-II-TIME-11
-  Aluno 5 - Tela de Detalhes da Demanda
-
-  Esta tela mostra todas as informacoes de uma demanda em um unico lugar:
-  os dados principais, a descricao, os comentarios da equipe e o historico
-  de alteracoes.
-
-  O QUE MUDOU DESDE A REUNIAO 2
-
-  Naquela etapa o conteudo estava escrito a mao aqui dentro, como exemplo,
-  e a pagina abria com um duplo clique no arquivo.
-
-  Agora existe um backend. As areas de conteudo nascem vazias e sao
-  preenchidas pelo arquivo detalhes-demanda.js, com os dados que vem do
-  servidor. Por isso a tela precisa ser aberta pelo endereco
-  http://localhost:3000, e nao mais por duplo clique: abrindo o arquivo
-  direto do disco, o navegador nao encontra o servidor e a tela fica vazia.
-
-  As instrucoes para ligar o servidor estao no README.md.
-  ===========================================================================
+  O status, os comentarios e o historico sao preenchidos pelo arquivo
+  detalhes-demanda.js, com os dados que vem do servidor. Por isso a tela
+  precisa ser aberta em http://localhost:3000, com o servidor ligado.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <!-- Permite acentos e caracteres do portugues -->
-    <meta charset="UTF-8" />
 
-    <!-- Faz a pagina se ajustar a largura da tela do celular -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Demanda</title>
+    <link rel="stylesheet" href="detalhes-demanda.css">
+</head>
 
-    <title>Detalhes da Demanda | Acompanhamento de Demandas</title>
+<body>
+    <header>
+        <div class="cabecalho">
+            <div class="marca">Acompanhamento de <span>Demandas</span></div>
 
-    <link rel="stylesheet" href="detalhes-demanda.css" />
-  </head>
+            <nav>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="listagem.html" class="ativo">Demandas</a>
+            </nav>
 
-  <body>
-    <!-- ==================================================================
-         CABECALHO
-         Barra superior com o nome do sistema, o menu e o usuario.
-         O nome e o perfil do usuario sao preenchidos pelo JavaScript.
-         ================================================================== -->
-    <header class="cabecalho">
-      <div class="cabecalho__interno">
-        <div class="cabecalho__marca">
-          Acompanhamento de <span>Demandas</span>
+            <div class="usuario">
+                <strong>Eduardo Martins Colmati</strong>
+                Administrador
+            </div>
         </div>
-
-        <nav class="cabecalho__navegacao" aria-label="Menu principal">
-          <a class="cabecalho__link" href="dashboard.html">Dashboard</a>
-          <a class="cabecalho__link cabecalho__link--ativo" href="listagem.html">
-            Demandas
-          </a>
-        </nav>
-
-        <div class="cabecalho__usuario">
-          <div class="cabecalho__usuario-dados">
-            <div class="cabecalho__usuario-nome" id="nomeDoUsuario"></div>
-            <div class="cabecalho__usuario-perfil" id="perfilDoUsuario"></div>
-          </div>
-
-          <!-- Circulo com a inicial do nome. aria-hidden esconde do leitor
-               de tela, porque o nome ja aparece escrito ao lado. -->
-          <div class="cabecalho__inicial" aria-hidden="true" id="inicialDoUsuario"></div>
-        </div>
-      </div>
     </header>
 
-    <main class="pagina">
-      <!--
-        Botao de voltar.
+    <main>
+        <a href="listagem.html" id="voltar">Voltar para a tela anterior</a>
 
-        E um link de verdade, apontando para a listagem, e nao um botao
-        solto. Assim ele continua funcionando com o teclado e permite abrir
-        a listagem em uma nova aba com o botao do meio do mouse.
+        <h1>Corrigir erro ao salvar nota do aluno</h1>
 
-        O JavaScript intercepta o clique e volta para a tela anterior de
-        verdade, seja ela a listagem ou o dashboard. Quando nao ha tela
-        anterior, o endereco escrito aqui e usado como destino.
-      -->
-      <a class="voltar" href="listagem.html" id="linkDeVoltar">
-        Voltar para a tela anterior
-      </a>
-
-      <!--
-        Area de aviso, usada para confirmar uma acao ou explicar um erro.
-        Comeca escondida e o JavaScript a mostra quando ha o que dizer.
-
-        O role alert faz o leitor de tela anunciar a mensagem assim que ela
-        aparece, sem esperar a pessoa chegar ate ela navegando.
-      -->
-      <div class="aviso aviso--escondido" id="areaDeAviso" role="alert"></div>
-
-      <!-- Mostrado enquanto os dados sao buscados no servidor -->
-      <p class="texto-apoio" id="avisoCarregando">Carregando a demanda...</p>
-
-      <!-- Todo o conteudo comeca escondido e aparece quando os dados chegam -->
-      <div id="conteudoDaDemanda" hidden>
-        <!-- ================================================================
-             TOPO DA DEMANDA
-             Titulo e as tres etiquetas de classificacao.
-             ================================================================ -->
-        <div class="pagina__topo">
-          <div class="pagina__titulo-area">
-            <h1 class="pagina__titulo" id="tituloDaDemanda"></h1>
-
-            <!--
-              As etiquetas mostram a cor e o texto ao mesmo tempo.
-              Escrever a palavra junto da cor e importante para quem nao
-              distingue cores conseguir entender a informacao.
-            -->
-            <div class="etiquetas" id="etiquetasDaDemanda"></div>
-          </div>
-
-          <a class="botao botao--secundario" id="linkDeEditar" href="#">
-            Editar demanda
-          </a>
+        <div class="etiquetas">
+            <span id="etiqueta_status" class="etiqueta"></span>
+            <span class="etiqueta critica">Critica</span>
+            <span class="etiqueta">Defeito</span>
         </div>
 
-        <!-- ================================================================
-             CORPO DA TELA
-             Duas colunas: a principal, com descricao, acoes e comentarios,
-             e a lateral, com a ficha de informacoes e o historico.
-             Em telas menores as duas colunas viram uma so.
-             ================================================================ -->
         <div class="colunas">
-          <!-- ------------------------ COLUNA PRINCIPAL ------------------ -->
-          <div>
-            <!-- Descricao -->
-            <section class="card">
-              <h2 class="card__titulo">Descricao</h2>
-              <div id="descricaoDaDemanda"></div>
-            </section>
-
-            <!--
-              Acoes de andamento.
-
-              Quais botoes aparecem aqui depende do status atual da demanda,
-              e quem decide isso e o servidor. Por exemplo: uma demanda Em
-              andamento nao mostra botao de concluir, porque pelo fluxo do
-              Documento de Visao ela precisa passar por Em revisao antes.
-
-              A secao inteira some quando a demanda ja esta concluida ou
-              cancelada, porque nesses casos nao ha mais o que fazer.
-            -->
-            <section class="card secao" id="secaoDeAcoes" hidden>
-              <h2 class="card__titulo">Atualizar andamento</h2>
-              <p class="texto-apoio" id="statusAtual"></p>
-              <div class="acoes" id="botoesDeStatus"></div>
-            </section>
-
-            <!-- Comentarios -->
-            <section class="card secao">
-              <h2 class="card__titulo">
-                Comentarios <span class="contador" id="contadorDeComentarios"></span>
-              </h2>
-
-              <!--
-                novalidate desliga as mensagens automaticas do navegador.
-                A conferencia e feita no nosso JavaScript, para o texto sair
-                em portugues e no mesmo padrao do resto do sistema.
-              -->
-              <form id="formularioDeComentario" novalidate>
-                <div class="campo">
-                  <label class="campo__rotulo" for="comentario">
-                    Escrever um comentario
-                  </label>
-                  <textarea
-                    class="campo__area"
-                    id="comentario"
-                    maxlength="2000"
-                    placeholder="Registre uma duvida, uma observacao ou uma atualizacao sobre o andamento"
-                  ></textarea>
-                  <p class="campo__erro" id="erroComentario"></p>
+            <!-- Coluna do conteudo -->
+            <div>
+                <div class="card">
+                    <h2>Descricao</h2>
+                    <p>
+                        Ao lancar uma nota utilizando virgula como separador decimal, por
+                        exemplo 7,5, o sistema apresenta uma mensagem de erro e nao grava o
+                        registro. Usando ponto, como 7.5, a nota e salva normalmente.
+                    </p>
                 </div>
 
-                <button type="submit" class="botao botao--principal" id="botaoComentar">
-                  Enviar comentario
-                </button>
-              </form>
+                <!-- Os botoes que aparecem aqui dependem do status atual.
+                     Quem decide quais existem e o servidor. -->
+                <div class="card" id="secao_acoes">
+                    <h2>Atualizar andamento</h2>
+                    <p class="apoio" id="status_atual"></p>
+                    <div id="botoes_status"></div>
+                </div>
 
-              <!-- Comentarios ja registrados -->
-              <div class="lista-comentarios" id="listaDeComentarios"></div>
-            </section>
-          </div>
+                <div class="card">
+                    <h2>Comentarios <span class="data" id="contador"></span></h2>
 
-          <!-- ------------------------- COLUNA LATERAL ------------------- -->
-          <aside>
-            <!--
-              Ficha com os dados da demanda.
-              Usamos dl, dt e dd, que sao as marcacoes proprias do HTML para
-              pares de "nome do dado" e "valor do dado".
-            -->
-            <section class="card">
-              <h2 class="card__titulo">Informacoes</h2>
-              <dl class="ficha" id="fichaDaDemanda"></dl>
-            </section>
+                    <form id="form_comentario">
+                        <label for="comentario">Escrever um comentario</label>
+                        <textarea id="comentario" placeholder="Registre uma duvida ou uma observacao"></textarea>
+                        <p class="erro" id="erro_comentario"></p>
+                        <button type="submit" class="botao principal">Enviar comentario</button>
+                    </form>
 
-            <!--
-              Historico de alteracoes.
-              Apresentado como linha do tempo: uma barra vertical a esquerda
-              e um ponto marcando cada alteracao. A alteracao mais recente
-              aparece no topo.
-            -->
-            <section class="card secao">
-              <h2 class="card__titulo">Historico de alteracoes</h2>
-              <ul class="historico" id="listaDoHistorico"></ul>
-            </section>
-          </aside>
+                    <div id="lista_comentarios"></div>
+                </div>
+            </div>
+
+            <!-- Coluna lateral -->
+            <div>
+                <div class="card">
+                    <h2>Informacoes</h2>
+
+                    <dl class="ficha">
+                        <div>
+                            <dt>Numero</dt>
+                            <dd>#1</dd>
+                        </div>
+                        <div>
+                            <dt>Projeto</dt>
+                            <dd>Portal do Aluno</dd>
+                        </div>
+                        <div>
+                            <dt>Responsavel</dt>
+                            <dd>Gustavo de Oliveira de Santana</dd>
+                        </div>
+                        <div>
+                            <dt>Cadastrada por</dt>
+                            <dd>Eduardo Martins Colmati</dd>
+                        </div>
+                        <div>
+                            <dt>Data de criacao</dt>
+                            <dd>17/08/2026 as 16:45</dd>
+                        </div>
+                        <div>
+                            <dt>Prazo</dt>
+                            <dd class="atencao">10/09/2026</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="card">
+                    <h2>Historico de alteracoes</h2>
+                    <ul id="lista_historico"></ul>
+                </div>
+            </div>
         </div>
-      </div>
     </main>
 
     <script src="detalhes-demanda.js"></script>
-  </body>
+</body>
+
 </html>
