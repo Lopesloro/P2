@@ -22,6 +22,26 @@ const erro_comentario = document.querySelector("#erro_comentario")
 // Sem numero nenhum, abre a primeira.
 const id = new URLSearchParams(window.location.search).get("id") || "1"
 
+// Converte a data de 2026-10-15 para 15/10/2026.
+//
+// O campo de data do formulario entrega sempre no formato com o ano na
+// frente. A separacao e feita no texto, e nao com o objeto Date, porque o
+// Date ajustaria para o fuso horario do computador e o dia poderia
+// aparecer com um dia de diferenca.
+function formatarData(data) {
+    if (!data) {
+        return ""
+    }
+
+    const partes = String(data).split("-")
+
+    if (partes.length !== 3) {
+        return data
+    }
+
+    return partes[2] + "/" + partes[1] + "/" + partes[0]
+}
+
 // Desenha na tela os dados que vieram do servidor
 function mostrar(dados) {
     const demanda = dados.demanda
@@ -29,8 +49,12 @@ function mostrar(dados) {
     // Dados que vem da listagem
     titulo.textContent = demanda.titulo
     descricao.textContent = demanda.descricao
+    // Etiqueta sem valor e escondida, para nao virar uma pilula vazia
     etiqueta_prioridade.textContent = demanda.prioridade
+    etiqueta_prioridade.style.display = demanda.prioridade ? "inline-flex" : "none"
+
     etiqueta_tipo.textContent = demanda.tipo
+    etiqueta_tipo.style.display = demanda.tipo ? "inline-flex" : "none"
 
     // Status. A classe muda a cor da etiqueta.
     etiqueta_status.textContent = demanda.status
@@ -40,15 +64,28 @@ function mostrar(dados) {
     // Ficha lateral
     ficha.innerHTML = ""
 
+    // Os mesmos campos que a tela de listagem mostra, para quem abrir a
+    // demanda encontrar aqui tudo o que viu na linha da tabela
     const campos = [
         ["Numero", "#" + demanda.id],
         ["Projeto", demanda.projeto],
-        ["Responsavel", demanda.responsavel]
+        ["Responsavel", demanda.responsavel],
+        ["Data de criacao", demanda.criacao],
+        ["Prazo de finalizacao", formatarData(demanda.prazo)]
     ]
 
     campos.forEach((campo) => {
         const div = document.createElement("div")
-        div.innerHTML = "<dt>" + campo[0] + "</dt><dd>" + campo[1] + "</dd>"
+        const valor = campo[1]
+
+        // Campo em branco vira "Nao informado". Sem isso a linha apareceria
+        // vazia e a pessoa nao saberia se o dado falta ou se a tela quebrou.
+        if (valor === "" || valor === undefined || valor === null) {
+            div.innerHTML = "<dt>" + campo[0] + "</dt><dd class='vazio'>Nao informado</dd>"
+        } else {
+            div.innerHTML = "<dt>" + campo[0] + "</dt><dd>" + valor + "</dd>"
+        }
+
         ficha.appendChild(div)
     })
 

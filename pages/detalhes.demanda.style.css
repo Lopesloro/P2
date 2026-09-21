@@ -256,6 +256,13 @@ label {
     color: var(--vermelho);
 }
 
+/* Campo que a demanda ainda nao tem preenchido */
+.vazio {
+    color: var(--texto-claro);
+    font-style: italic;
+    font-weight: normal;
+}
+
 #lista_historico {
     list-style: none;
 }
