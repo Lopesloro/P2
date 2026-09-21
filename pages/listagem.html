@@ -24,6 +24,10 @@
 
         <p class="erro" id="erroBusca" role="alert" hidden></p>
 
+        <!-- Aviso de busca sem resultado. O listagem.js ja procurava por
+             este elemento, mas ele nao existia no HTML. -->
+        <p class="erro" id="sem_resultado" role="alert" hidden>Nenhuma demanda encontrada.</p>
+
         <div class="tabela">
             <table>
                 <thead>
@@ -40,97 +44,23 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-                </tbody>
+                <!-- As linhas sao montadas por listagem.dados.js, com as
+                     demandas que vem do servidor -->
+                <tbody></tbody>
             </table>
         </div>
 
-        <p class="total">Total de demandas: 6</p>
+        <p class="total">Carregando...</p>
 
     </div>
+
+    <!-- Monta a tabela com as demandas que vem do servidor.
+         Autor: Gabriel Lopes Londe Rodrigues -->
+    <script src="listagem.dados.js"></script>
+
+    <!-- Busca da listagem. O arquivo ja existia, mas nunca chegava a ser
+         carregado porque faltava esta linha no HTML. -->
+    <script src="listagem.js"></script>
 
 </body>
 </html>

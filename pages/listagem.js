@@ -1,11 +1,18 @@
 // Autor do arquivo: Enzo Carleti Teixeira
 
 // Elementos usados no código
-const form_busca = document.querySelector("#form_busca");
+//
+// Dois nomes foram corrigidos para bater com o listagem.html: o
+// formulario se chama formulario_busca e o aviso de erro, erroBusca.
+// Com os nomes antigos a busca nao chegava a funcionar.
+const form_busca = document.querySelector("#formulario_busca");
 const campo_busca = document.querySelector(".pesquisa");
-const erro_busca = document.querySelector("#erro_busca");
+const erro_busca = document.querySelector("#erroBusca");
 const sem_resultado = document.querySelector("#sem_resultado");
-const linhas = document.querySelectorAll("tbody tr");
+// As linhas da tabela agora sao montadas pelo servidor, depois que esta
+// pagina abre. Por isso elas precisam ser lidas na hora da busca, e nao
+// uma unica vez aqui em cima, quando a tabela ainda esta vazia.
+const linhas = () => document.querySelectorAll("tbody tr");
 const total = document.querySelector(".total");
 
 // Executa quando algo é buscado
@@ -45,7 +52,7 @@ form_busca.addEventListener("submit", (e) => {
     let encontradas = 0
 
     // Percorre as linhas da tabela e esconde as que não combinam com o que foi digitado no campo de busca e mostra as que combinam
-    linhas.forEach((linha) => {
+    linhas().forEach((linha) => {
         if (linha.textContent.toLowerCase().includes(termo.toLowerCase())) {
             linha.style.display = ""
             encontradas++
@@ -69,11 +76,11 @@ form_busca.addEventListener("submit", (e) => {
 campo_busca.addEventListener("input", () => {
 
     if (campo_busca.value === "") {
-        linhas.forEach((linha) => {
+        linhas().forEach((linha) => {
             linha.style.display = ""
         })
 
-        total.textContent = "Total de demandas: " + linhas.length
+        total.textContent = "Total de demandas: " + linhas().length
         erro_busca.style.display = "none"
         sem_resultado.style.display = "none"
     }
