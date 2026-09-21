@@ -1,51 +1,76 @@
-# Tela de Detalhes da Demanda - Aluno 5
+# Sistema de Acompanhamento de Demandas - PI-II-TIME-11
 
-Autor: Gabriel Lopes Londe Rodrigues
+Repositorio de trabalho de **Gabriel Lopes Londe Rodrigues**, Aluno 5.
 
 Projeto Integrador II - Engenharia de Software
-Equipe: PI-II-TIME-11
 
 ---
 
-## Arquivos
+## AVISO SOBRE A AUTORIA DOS ARQUIVOS
 
-| Arquivo | O que e |
+Este repositorio **nao e o repositorio oficial da equipe**. O oficial e
+`gustavoosantana/PI-II-TIME-11`, e e la que as entregas acontecem.
+
+Aqui o projeto inteiro foi reunido com um unico objetivo: poder ver o
+sistema funcionando por completo antes de integrar, com a minha tela
+ligada as dos colegas.
+
+Por isso este repositorio contem arquivos que **nao sao de minha autoria**.
+Cada um deles traz no topo o nome do autor, como estava no repositorio da
+equipe, e nenhum foi alterado por mim.
+
+### O que e meu
+
+| Arquivo | |
 |---|---|
-| `detalhes-demanda.html` | A tela |
-| `detalhes-demanda.css` | Os estilos |
-| `detalhes-demanda.js` | O que a tela faz |
-| `app.js` | O servidor |
+| `pages/detalhes.demanda.html` | A tela de Detalhes da Demanda |
+| `pages/detalhes.demanda.style.css` | Os estilos dela |
+| `pages/detalhes.demanda.js` | O que a tela faz |
+| `detalhes.demanda.rotas.js` | As rotas e as regras do backend |
+
+### O que e dos colegas, copiado sem alteracao
+
+| Arquivo | Tela |
+|---|---|
+| `pages/login.*` | Login |
+| `pages/dashboard.*` e `dashboard.js` | Dashboard |
+| `pages/listagem*` | Listagem de Demandas |
+| `pages/cadastro_demanda*` | Cadastro de Demanda |
+| `pages/edicao_demanda.html` | Edicao de Demanda |
+
+### O unico arquivo compartilhado que foi alterado
+
+O `app.js`. A base e da equipe; eu acrescentei quatro trechos, todos
+marcados com comentario no proprio arquivo:
+
+- `import` das minhas rotas
+- `app.use(express.json())`, para o servidor conseguir ler o que as telas
+  enviam
+- `app.use(express.static('pages'))`, para as telas serem entregues pelo
+  navegador. Sem esta linha nenhuma tela do projeto abre, nem as dos
+  colegas
+- a porta passou a vir de `process.env.PORT`, exigencia do servico de
+  hospedagem. Rodando na propria maquina continua sendo a 3000
+
+Nada disso foi commitado no repositorio da equipe.
 
 ## Como executar
-
-Precisa do Node.js instalado. A partir desta pasta:
 
 ```
 npm install
 npm run dev
 ```
 
-Abra `http://localhost:3000/detalhes-demanda.html?id=1`.
+Abra `http://localhost:3000/login.html`.
 
-O numero depois de `?id=` diz qual demanda abrir, de 1 a 6, seguindo a
-ordem da tela de listagem. Sem numero nenhum, abre a primeira.
+A tela de Detalhes fica em `detalhes.demanda.html?id=1`. O numero indica
+qual demanda abrir, de 1 a 6, seguindo a ordem da listagem.
 
-Atencao: a tela nao abre mais com duplo clique no arquivo, porque agora
-o conteudo vem do servidor.
-
-## O que a tela faz
-
-- Mostra a demanda, os comentarios e o historico
-- Registra um comentario novo
-- Muda o status da demanda
-- Anota sozinha, no historico, toda mudanca de status
-- Botao de voltar para a tela anterior
-
-## As rotas
+## As rotas do backend
 
 | Metodo | Endereco | O que faz |
 |---|---|---|
-| `GET` | `/api/demanda/:id` | Devolve a demanda |
+| `GET` | `/api/demanda/:id` | Devolve uma demanda |
 | `POST` | `/api/demanda/:id/comentarios` | Registra um comentario |
 | `PATCH` | `/api/demanda/:id/status` | Muda o status |
 
@@ -60,62 +85,33 @@ Aberta  ->  Em andamento  ->  Em revisao  ->  Concluida
 Cancelar encerra a demanda a partir de qualquer um desses pontos.
 
 Por isso, com a demanda **Em andamento**, a tela nao mostra botao de
-concluir: so aparece "Mover para Em revisao". O botao de concluir surge
-depois que ela chega em Em revisao.
+concluir: so aparece "Mover para Em revisao".
 
-Quem decide quais botoes aparecem e o servidor. A conferencia e feita
-duas vezes, na tela e no servidor: a tela e so a aparencia, e quem chamar
-a rota por fora do navegador continua barrado.
+Quem decide quais botoes aparecem e o servidor. A conferencia e feita duas
+vezes, na tela e no servidor: a tela e so a aparencia, e quem chamar a
+rota por fora do navegador continua barrado.
 
 ## De onde vem os dados
 
-As seis demandas dentro do `app.js` sao as mesmas seis que aparecem na
-tela de listagem, com os mesmos valores de exemplo. Nada foi inventado
-aqui: se a listagem mostra "Exemplo C", esta tela mostra "Exemplo C".
+As seis demandas dentro de `detalhes.demanda.rotas.js` sao as mesmas seis
+que aparecem na tela de listagem, com os mesmos valores de exemplo.
 
-Duas observacoes sobre isso:
+O campo status e o unico que nao copia a listagem. La ele tambem esta
+escrito "Exemplo A", que nao e um status valido, e sem um valor de verdade
+nao da para conferir o ciclo de vida. Cada demanda recebeu um status
+diferente, o que permite testar todos os casos da regra.
 
-- O campo status e o unico que nao copia a listagem. La ele tambem esta
-  escrito "Exemplo A", mas aqui ele precisa de um valor de verdade, senao
-  nao da para conferir o ciclo de vida. Cada demanda recebeu um status
-  diferente, para dar para testar todos os casos da regra.
-- Os comentarios e o historico comecam vazios, porque a listagem nao tem
-  essas informacoes. Eles vao sendo preenchidos conforme a tela e usada.
+Os comentarios e o historico comecam vazios, porque a listagem nao tem
+essas informacoes.
 
 Os dados ficam em uma variavel porque o projeto ainda nao tem banco de
-dados. Ao desligar o servidor eles voltam ao valor inicial.
+dados. Ao reiniciar o servidor eles voltam ao valor inicial.
 
-## Responsividade
+## O que ainda nao esta ligado
 
-Abaixo de 900px a coluna lateral desce para baixo do conteudo e os botoes
-ocupam a largura toda, ficando mais faceis de tocar com o dedo.
+A listagem ainda nao chega ate a tela de Detalhes: o link "Detalhes" de
+todas as linhas aponta para `produtodetalhes.html`, arquivo que nao existe
+no repositorio, e nao leva o numero da demanda. Para ligar, cada link
+precisa virar `detalhes.demanda.html?id=1`, com o numero da linha.
 
-## Padrao visual
-
-Cores combinadas pelo grupo:
-
-| Codigo | Uso |
-|---|---|
-| `#14213D` | Cabecalho e textos |
-| `#FCA311` | Cor de acao |
-| `#E5E5E5` | Fundo da pagina |
-| `#FFFFFF` | Fundo dos cards |
-
-As outras quatro telas do sistema usam fundo claro `#E5E5E5`. Esta tela
-era a unica escura, entao foi clareada para ficar igual as demais. As
-cores do grupo continuam as mesmas, mudou so onde cada uma e aplicada.
-
-As cores estao em variaveis no inicio do CSS. Para mudar a cor da tela
-inteira, basta alterar la.
-
-## Como juntar com o repositorio da equipe
-
-O `app.js` da equipe e de outro integrante. As minhas rotas precisam ser
-copiadas para dentro dele, junto com a linha `app.use(express.json())`,
-que e o que permite ler o comentario enviado pela tela.
-
-Falta um ajuste na tela de listagem, que nao e minha: hoje o link
-"Detalhes" de todas as linhas aponta para `produtodetalhes.html`, um
-arquivo que nao existe no repositorio, e nao leva o numero da demanda.
-Para a listagem chegar nesta tela, cada link precisa virar
-`detalhes.demanda.html?id=1`, com o numero da linha correspondente.
+Esse arquivo e de outro integrante, entao a alteracao nao foi feita aqui.

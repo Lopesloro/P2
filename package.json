@@ -1,7 +1,7 @@
 {
-  "name": "detalhes-demanda",
+  "name": "pi-ii-time-11",
   "version": "1.0.0",
-  "description": "Tela de Detalhes da Demanda - PI-II-TIME-11 - Aluno 5",
+  "description": "Sistema de Acompanhamento de Demandas de Desenvolvimento - PI-II-TIME-11",
   "author": "Gabriel Lopes Londe Rodrigues",
   "license": "ISC",
   "type": "module",

@@ -1,0 +1,252 @@
+
+
+<!--José Gabriel Bedani
+        Dashboard-->
+
+        
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="../dashboard.js" defer></script>
+</head>
+
+<body>
+
+    
+
+    <header>
+        <h1>Dashboard</h1>
+    </header>
+
+    <main>
+
+        <!-- Filtro de visualização do dashboard -->
+        <div class="filtro-dashboard">
+
+            <label for="filtroVisualizacao">
+                Visualizar:
+            </label>
+
+            <select id="filtroVisualizacao">
+
+                <option value="todos">
+                    Todos
+                </option>
+
+                <option value="resumo">
+                    Resumo das demandas
+                </option>
+
+                <option value="prioridade">
+                    Demandas por prioridade
+                </option>
+
+                <option value="tipo">
+                    Demandas por tipo
+                </option>
+
+                <option value="criticas">
+                    Demandas críticas
+                </option>
+
+                <option value="prazos">
+                    Próximas do prazo
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Resumo das demandas -->
+        <section
+            id="secaoResumo"
+            class="secao-dashboard"
+            data-secao="resumo"
+        >
+
+            <h2>Resumo das demandas</h2>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Quantidade</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Total</td>
+                        <td>25</td>
+                    </tr>
+
+                    <tr>
+                        <td>Abertas</td>
+                        <td>8</td>
+                    </tr>
+
+                    <tr>
+                        <td>Em andamento</td>
+                        <td>6</td>
+                    </tr>
+
+                    <tr>
+                        <td>Em revisão</td>
+                        <td>4</td>
+                    </tr>
+
+                    <tr>
+                        <td>Concluídas</td>
+                        <td>5</td>
+                    </tr>
+
+                    <tr>
+                        <td>Canceladas</td>
+                        <td>2</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+
+        <!-- Demandas por prioridade -->
+        <section
+            id="secaoPrioridade"
+            class="secao-dashboard"
+            data-secao="prioridade"
+        >
+
+            <h2>Demandas por prioridade</h2>
+
+            <div class="prioridade">
+
+                <ul>
+                    <li>Crítica: 3</li>
+                    <li>Alta: 7</li>
+                    <li>Média: 10</li>
+                    <li>Baixa: 5</li>
+                </ul>
+
+            </div>
+
+        </section>
+
+
+        <!-- Demandas por tipo -->
+        <section
+            id="secaoTipo"
+            class="secao-dashboard"
+            data-secao="tipo"
+        >
+
+            <h2>Demandas por tipo</h2>
+
+            <div class="tipo">
+
+                <ul>
+                    <li>Tarefa: 10</li>
+                    <li>Defeito: 6</li>
+                    <li>Melhoria: 5</li>
+                    <li>Documentação: 4</li>
+                </ul>
+
+            </div>
+
+        </section>
+
+
+        <!-- Demandas críticas -->
+        <section
+            id="secaoCriticas"
+            class="secao-dashboard"
+            data-secao="criticas"
+        >
+
+            <h2>Demandas críticas em aberto</h2>
+
+            <div class="criticas">
+
+                <h3>
+                    Erro no sistema de login
+                </h3>
+
+                <p>
+                    Responsável: João Silva
+                </p>
+
+                <p>
+                    Prazo: 20/09/2026
+                </p>
+
+            </div>
+
+
+            <div class="criticas">
+
+                <h3>
+                    Falha no cadastro de usuários
+                </h3>
+
+                <p>
+                    Responsável: Maria Santos
+                </p>
+
+                <p>
+                    Prazo: 22/09/2026
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Demandas próximas do prazo -->
+        <section
+            id="secaoPrazos"
+            class="secao-dashboard"
+            data-secao="prazos"
+        >
+
+            <h2>Demandas próximas do prazo</h2>
+
+            <div class="prazos">
+
+                <h3>
+                    Atualizar documentação
+                </h3>
+
+                <p>
+                    Responsável: Pedro Oliveira
+                </p>
+
+                <p>
+                    Prazo: 19/09/2026
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+  
+    
+
+</body>
+
+</html>
+```
