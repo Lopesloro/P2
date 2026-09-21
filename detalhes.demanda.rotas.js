@@ -12,19 +12,11 @@ export const rotas = Router()
 // ligada, este nome passa a vir de la.
 const usuario = "Eduardo Martins Colmati"
 
-// Aqui ficam as demandas do sistema.
+// As demandas do sistema. A lista comeca vazia: tudo o que aparecer nas
+// telas vai ter entrado pela rota de cadastro, POST /api/demandas.
 //
-// A lista comeca com seis demandas de exemplo, criadas logo abaixo pela
-// funcao demandasDeExemplo. Elas existem para o sistema ter o que mostrar
-// enquanto a tela de cadastro ainda nao envia nada, e foram escolhidas
-// para cobrir os cinco status do ciclo de vida: assim da para demonstrar
-// cada situacao sem precisar preparar nada antes.
-//
-// Todas podem ser usadas normalmente: da para comentar, mudar o status e
-// acompanhar o historico, como se fossem demandas de verdade.
-//
-// A lista fica em uma variavel porque o projeto ainda nao tem banco de
-// dados. Ao reiniciar o servidor ela volta a ser estas seis.
+// Fica em uma variavel porque o projeto ainda nao tem banco de dados, entao
+// ao reiniciar o servidor a lista volta a ficar vazia.
 const demandas = []
 
 // Numero da proxima demanda. Faz o papel que o banco de dados fara
@@ -81,18 +73,6 @@ function agora() {
     return data + " as " + hora
 }
 
-// Devolve a data daqui a tantos dias, no formato 2026-10-15.
-//
-// Os prazos das demandas de exemplo usam esta funcao em vez de datas
-// escritas a mao, para continuarem fazendo sentido com o passar do tempo:
-// o que vence em tres dias hoje vai continuar vencendo em tres dias
-// daqui a um mes.
-function emDias(quantidade) {
-    const d = new Date()
-    d.setDate(d.getDate() + quantidade)
-    return d.toISOString().slice(0, 10)
-}
-
 /* ---------------------------------------------------------------------
    LIGACAO ENTRE A LISTAGEM E ESTA TELA
 
@@ -105,89 +85,6 @@ function emDias(quantidade) {
    informar, no formato detalhes.demanda.html?id=1, esta ponte deixa de
    ser necessaria.
    --------------------------------------------------------------------- */
-/* ---------------------------------------------------------------------
-   DEMANDAS DE EXEMPLO
-
-   Criadas quando o servidor sobe, para o sistema nao comecar vazio.
-   Quando a tela de cadastro estiver ligada, estas seis podem sair e o
-   sistema passa a viver so do que for cadastrado.
-   --------------------------------------------------------------------- */
-function demandasDeExemplo() {
-    const lista = [
-        {
-            titulo: "Corrigir erro ao salvar nota com virgula",
-            descricao: "Ao lancar uma nota usando virgula como separador, por exemplo 7,5, o sistema mostra erro e nao grava. Com ponto, 7.5, grava normalmente.",
-            projeto: "Portal do Aluno",
-            responsavel: "Gustavo de Oliveira de Santana",
-            tipo: "Defeito", prioridade: "Critica", status: "Em andamento",
-            prazo: emDias(3)
-        },
-        {
-            titulo: "Criar tela de consulta de faltas",
-            descricao: "O aluno precisa ver quantas faltas tem em cada materia e quantas ainda pode ter antes de reprovar por frequencia.",
-            projeto: "Portal do Aluno",
-            responsavel: "Gabriel Lopes Londe Rodrigues",
-            tipo: "Tarefa", prioridade: "Alta", status: "Aberta",
-            prazo: emDias(12)
-        },
-        {
-            titulo: "Corrigir contagem de exemplares disponiveis",
-            descricao: "A quantidade de exemplares nao diminui quando o livro e emprestado, entao o sistema permite reservar um livro que ja saiu.",
-            projeto: "Aplicativo de Biblioteca",
-            responsavel: "",
-            tipo: "Defeito", prioridade: "Alta", status: "Em revisao",
-            prazo: emDias(6)
-        },
-        {
-            titulo: "Melhorar desempenho da listagem de notas",
-            descricao: "A listagem demora cerca de oito segundos para abrir quando a turma tem mais de quarenta alunos.",
-            projeto: "Portal do Aluno",
-            responsavel: "Gustavo de Oliveira de Santana",
-            tipo: "Melhoria", prioridade: "Media", status: "Concluida",
-            prazo: emDias(-4)
-        },
-        {
-            titulo: "Ajustar layout do menu no celular",
-            descricao: "No celular o menu cobre o conteudo da pagina e nao fecha ao tocar fora dele.",
-            projeto: "Site Institucional",
-            responsavel: "Gabriel Lopes Londe Rodrigues",
-            tipo: "Defeito", prioridade: "Media", status: "Cancelada",
-            prazo: ""
-        },
-        {
-            titulo: "Escrever manual do bibliotecario",
-            descricao: "Documentar o cadastro de livros, o registro de emprestimo e a devolucao, com telas de exemplo.",
-            projeto: "Aplicativo de Biblioteca",
-            responsavel: "",
-            tipo: "Documentacao", prioridade: "Baixa", status: "Aberta",
-            prazo: emDias(25)
-        }
-    ]
-
-    lista.forEach((dados) => {
-        demandas.push({
-            id: proximoNumero,
-            titulo: dados.titulo,
-            descricao: dados.descricao,
-            projeto: dados.projeto,
-            tipo: dados.tipo,
-            prioridade: dados.prioridade,
-            status: dados.status,
-            responsavel: dados.responsavel,
-            prazo: dados.prazo,
-            criacao: agora(),
-            comentarios: [],
-            historico: [
-                { texto: "Demanda cadastrada no sistema", autor: usuario, data: agora() }
-            ]
-        })
-
-        proximoNumero = proximoNumero + 1
-    })
-}
-
-demandasDeExemplo()
-
 // Abrir o endereco do site leva direto para a listagem de demandas, que e
 // por onde se comeca a usar o sistema.
 rotas.get("/", (req, res) => {
