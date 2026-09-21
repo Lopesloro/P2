@@ -36,12 +36,12 @@
     <main>
         <a href="listagem.html" id="voltar">Voltar para a tela anterior</a>
 
-        <h1>Corrigir erro ao salvar nota do aluno</h1>
+        <h1 id="titulo"></h1>
 
         <div class="etiquetas">
             <span id="etiqueta_status" class="etiqueta"></span>
-            <span class="etiqueta critica">Critica</span>
-            <span class="etiqueta">Defeito</span>
+            <span id="etiqueta_prioridade" class="etiqueta"></span>
+            <span id="etiqueta_tipo" class="etiqueta"></span>
         </div>
 
         <div class="colunas">
@@ -49,11 +49,7 @@
             <div>
                 <div class="card">
                     <h2>Descricao</h2>
-                    <p>
-                        Ao lancar uma nota utilizando virgula como separador decimal, por
-                        exemplo 7,5, o sistema apresenta uma mensagem de erro e nao grava o
-                        registro. Usando ponto, como 7.5, a nota e salva normalmente.
-                    </p>
+                    <p id="descricao"></p>
                 </div>
 
                 <!-- Os botoes que aparecem aqui dependem do status atual.
@@ -83,32 +79,7 @@
                 <div class="card">
                     <h2>Informacoes</h2>
 
-                    <dl class="ficha">
-                        <div>
-                            <dt>Numero</dt>
-                            <dd>#1</dd>
-                        </div>
-                        <div>
-                            <dt>Projeto</dt>
-                            <dd>Portal do Aluno</dd>
-                        </div>
-                        <div>
-                            <dt>Responsavel</dt>
-                            <dd>Gustavo de Oliveira de Santana</dd>
-                        </div>
-                        <div>
-                            <dt>Cadastrada por</dt>
-                            <dd>Eduardo Martins Colmati</dd>
-                        </div>
-                        <div>
-                            <dt>Data de criacao</dt>
-                            <dd>17/08/2026 as 16:45</dd>
-                        </div>
-                        <div>
-                            <dt>Prazo</dt>
-                            <dd class="atencao">10/09/2026</dd>
-                        </div>
-                    </dl>
+                    <dl class="ficha" id="ficha"></dl>
                 </div>
 
                 <div class="card">

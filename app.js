@@ -14,21 +14,25 @@ app.use(express.static("."))
 // Nome de quem esta usando o sistema
 const usuario = "Eduardo Martins Colmati"
 
-// Dados da demanda. Ficam nesta variavel porque o projeto ainda nao tem
-// banco de dados. Ao desligar o servidor eles voltam a ser estes.
-const demanda = {
-    status: "Em andamento",
-    comentarios: [
-        { autor: "Jose Gabriel Bedani", data: "18/08/2026 as 09:14", texto: "O erro acontece porque o campo espera ponto no lugar da virgula. Precisamos aceitar os dois formatos." },
-        { autor: "Gustavo de Oliveira de Santana", data: "18/08/2026 as 14:02", texto: "Consegui reproduzir aqui no meu ambiente. Vou comecar a correcao hoje." },
-        { autor: "Gabriel Lopes Londe Rodrigues", data: "19/08/2026 as 10:37", texto: "Vale conferir tambem a tela de lancamento de faltas, que usa o mesmo componente de campo numerico." }
-    ],
-    historico: [
-        { texto: "Status alterado de Aberta para Em andamento", autor: "Gustavo de Oliveira de Santana", data: "18/08/2026 as 13:58" },
-        { texto: "Responsavel definido como Gustavo de Oliveira de Santana", autor: "Jose Gabriel Bedani", data: "18/08/2026 as 09:20" },
-        { texto: "Demanda cadastrada no sistema", autor: "Eduardo Martins Colmati", data: "17/08/2026 as 16:45" }
-    ]
-}
+// As demandas sao as mesmas seis que aparecem na tela de listagem, com os
+// mesmos valores de exemplo. Elas ficam nesta variavel porque o projeto
+// ainda nao tem banco de dados, entao ao desligar o servidor os dados
+// voltam a ser estes.
+//
+// O campo status e o unico que nao copia a listagem. La ele tambem esta
+// escrito "Exemplo A", mas aqui ele precisa de um valor de verdade, senao
+// nao da para conferir o ciclo de vida da demanda mais abaixo.
+//
+// Os comentarios e o historico comecam vazios: a listagem nao tem essas
+// informacoes, entao nao havia de onde tira-las.
+const demandas = [
+    { id: 1, titulo: "Exemplo A", tipo: "Exemplo A", prioridade: "Exemplo A", status: "Aberta", projeto: "Exemplo A", responsavel: "Exemplo A", criacao: "Exemplo A", prazo: "Exemplo A", descricao: "Exemplo A", comentarios: [], historico: [] },
+    { id: 2, titulo: "Exemplo B", tipo: "Exemplo B", prioridade: "Exemplo B", status: "Em andamento", projeto: "Exemplo B", responsavel: "Exemplo B", criacao: "Exemplo B", prazo: "Exemplo B", descricao: "Exemplo B", comentarios: [], historico: [] },
+    { id: 3, titulo: "Exemplo C", tipo: "Exemplo C", prioridade: "Exemplo C", status: "Em revisao", projeto: "Exemplo C", responsavel: "Exemplo C", criacao: "Exemplo C", prazo: "Exemplo C", descricao: "Exemplo C", comentarios: [], historico: [] },
+    { id: 4, titulo: "Exemplo D", tipo: "Exemplo D", prioridade: "Exemplo D", status: "Concluida", projeto: "Exemplo D", responsavel: "Exemplo D", criacao: "Exemplo D", prazo: "Exemplo D", descricao: "Exemplo D", comentarios: [], historico: [] },
+    { id: 5, titulo: "Exemplo E", tipo: "Exemplo E", prioridade: "Exemplo E", status: "Cancelada", projeto: "Exemplo E", responsavel: "Exemplo E", criacao: "Exemplo E", prazo: "Exemplo E", descricao: "Exemplo E", comentarios: [], historico: [] },
+    { id: 6, titulo: "Exemplo F", tipo: "Exemplo F", prioridade: "Exemplo F", status: "Aberta", projeto: "Exemplo F", responsavel: "Exemplo F", criacao: "Exemplo F", prazo: "Exemplo F", descricao: "Exemplo F", comentarios: [], historico: [] }
+]
 
 // Ordem do ciclo de vida, definida no Documento de Visao.
 // A demanda nao pode pular etapas: para ser concluida ela precisa passar
@@ -46,20 +50,36 @@ function proximosStatus(atual) {
     return [ordem[ordem.indexOf(atual) + 1], "Cancelada"]
 }
 
-// Devolve a data e a hora de agora, no formato 20/09/2026 as 14:32
+// Procura uma demanda pelo numero
+function procurar(id) {
+    return demandas.find((d) => d.id === Number(id))
+}
+
+// Devolve a data e a hora de agora, no formato 21/09/2026 as 14:32
 function agora() {
     const d = new Date()
     return d.toLocaleDateString("pt-BR") + " as " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
 }
 
 // Envia a demanda para a tela
-app.get("/api/demanda", (req, res) => {
+app.get("/api/demanda/:id", (req, res) => {
+    const demanda = procurar(req.params.id)
+
+    if (!demanda) {
+        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    }
+
     res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
 })
 
 // Registra um comentario novo
-app.post("/api/comentarios", (req, res) => {
+app.post("/api/demanda/:id/comentarios", (req, res) => {
+    const demanda = procurar(req.params.id)
     const texto = req.body.texto
+
+    if (!demanda) {
+        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    }
 
     // O trim remove os espacos do comeco e do fim
     if (!texto || texto.trim() === "") {
@@ -72,8 +92,13 @@ app.post("/api/comentarios", (req, res) => {
 })
 
 // Muda o status da demanda
-app.patch("/api/status", (req, res) => {
+app.patch("/api/demanda/:id/status", (req, res) => {
+    const demanda = procurar(req.params.id)
     const novo = req.body.status
+
+    if (!demanda) {
+        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    }
 
     // A tela ja mostra so os botoes permitidos, mas a conferencia e feita
     // aqui tambem: quem chamar a rota por fora do navegador fica barrado

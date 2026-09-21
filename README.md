@@ -25,7 +25,10 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:3000/detalhes-demanda.html`.
+Abra `http://localhost:3000/detalhes-demanda.html?id=1`.
+
+O numero depois de `?id=` diz qual demanda abrir, de 1 a 6, seguindo a
+ordem da tela de listagem. Sem numero nenhum, abre a primeira.
 
 Atencao: a tela nao abre mais com duplo clique no arquivo, porque agora
 o conteudo vem do servidor.
@@ -42,9 +45,9 @@ o conteudo vem do servidor.
 
 | Metodo | Endereco | O que faz |
 |---|---|---|
-| `GET` | `/api/demanda` | Devolve a demanda |
-| `POST` | `/api/comentarios` | Registra um comentario |
-| `PATCH` | `/api/status` | Muda o status |
+| `GET` | `/api/demanda/:id` | Devolve a demanda |
+| `POST` | `/api/demanda/:id/comentarios` | Registra um comentario |
+| `PATCH` | `/api/demanda/:id/status` | Muda o status |
 
 ## A regra do ciclo de vida
 
@@ -64,10 +67,23 @@ Quem decide quais botoes aparecem e o servidor. A conferencia e feita
 duas vezes, na tela e no servidor: a tela e so a aparencia, e quem chamar
 a rota por fora do navegador continua barrado.
 
-## Onde os dados ficam
+## De onde vem os dados
 
-Em uma variavel dentro do `app.js`, porque o projeto ainda nao tem banco
-de dados. Ao desligar o servidor eles voltam ao valor inicial.
+As seis demandas dentro do `app.js` sao as mesmas seis que aparecem na
+tela de listagem, com os mesmos valores de exemplo. Nada foi inventado
+aqui: se a listagem mostra "Exemplo C", esta tela mostra "Exemplo C".
+
+Duas observacoes sobre isso:
+
+- O campo status e o unico que nao copia a listagem. La ele tambem esta
+  escrito "Exemplo A", mas aqui ele precisa de um valor de verdade, senao
+  nao da para conferir o ciclo de vida. Cada demanda recebeu um status
+  diferente, para dar para testar todos os casos da regra.
+- Os comentarios e o historico comecam vazios, porque a listagem nao tem
+  essas informacoes. Eles vao sendo preenchidos conforme a tela e usada.
+
+Os dados ficam em uma variavel porque o projeto ainda nao tem banco de
+dados. Ao desligar o servidor eles voltam ao valor inicial.
 
 ## Responsividade
 
@@ -97,3 +113,9 @@ inteira, basta alterar la.
 O `app.js` da equipe e de outro integrante. As minhas rotas precisam ser
 copiadas para dentro dele, junto com a linha `app.use(express.json())`,
 que e o que permite ler o comentario enviado pela tela.
+
+Falta um ajuste na tela de listagem, que nao e minha: hoje o link
+"Detalhes" de todas as linhas aponta para `produtodetalhes.html`, um
+arquivo que nao existe no repositorio, e nao leva o numero da demanda.
+Para a listagem chegar nesta tela, cada link precisa virar
+`detalhes.demanda.html?id=1`, com o numero da linha correspondente.

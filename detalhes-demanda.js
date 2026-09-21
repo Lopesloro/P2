@@ -1,7 +1,12 @@
 // Autor do arquivo: Gabriel Lopes Londe Rodrigues
 
 // Elementos usados no codigo
+const titulo = document.querySelector("#titulo")
 const etiqueta_status = document.querySelector("#etiqueta_status")
+const etiqueta_prioridade = document.querySelector("#etiqueta_prioridade")
+const etiqueta_tipo = document.querySelector("#etiqueta_tipo")
+const descricao = document.querySelector("#descricao")
+const ficha = document.querySelector("#ficha")
 const status_atual = document.querySelector("#status_atual")
 const secao_acoes = document.querySelector("#secao_acoes")
 const botoes_status = document.querySelector("#botoes_status")
@@ -13,14 +18,42 @@ const campo_comentario = document.querySelector("#comentario")
 const erro_comentario = document.querySelector("#erro_comentario")
 const voltar = document.querySelector("#voltar")
 
+// Numero da demanda, lido do endereco da pagina:
+// detalhes-demanda.html?id=3 abre a terceira demanda da listagem.
+// Sem numero nenhum, abre a primeira.
+const id = new URLSearchParams(window.location.search).get("id") || "1"
+
 // Desenha na tela os dados que vieram do servidor
 function mostrar(dados) {
     const demanda = dados.demanda
 
-    // Status, no topo da tela. A classe muda a cor da etiqueta.
+    // Dados que vem da listagem
+    titulo.textContent = demanda.titulo
+    descricao.textContent = demanda.descricao
+    etiqueta_prioridade.textContent = demanda.prioridade
+    etiqueta_tipo.textContent = demanda.tipo
+
+    // Status. A classe muda a cor da etiqueta.
     etiqueta_status.textContent = demanda.status
     etiqueta_status.className = "etiqueta " + demanda.status.toLowerCase().replace(" ", "-")
     status_atual.textContent = "Status atual: " + demanda.status + ". Escolha o proximo passo."
+
+    // Ficha lateral
+    ficha.innerHTML = ""
+
+    const campos = [
+        ["Numero", "#" + demanda.id],
+        ["Projeto", demanda.projeto],
+        ["Responsavel", demanda.responsavel],
+        ["Data de criacao", demanda.criacao],
+        ["Prazo", demanda.prazo]
+    ]
+
+    campos.forEach((campo) => {
+        const div = document.createElement("div")
+        div.innerHTML = "<dt>" + campo[0] + "</dt><dd>" + campo[1] + "</dd>"
+        ficha.appendChild(div)
+    })
 
     // Botoes de mudanca de status. Quem diz quais existem e o servidor,
     // por isso nao aparece botao de concluir enquanto a demanda esta em
@@ -42,6 +75,10 @@ function mostrar(dados) {
     contador.textContent = "(" + demanda.comentarios.length + ")"
     lista_comentarios.innerHTML = ""
 
+    if (demanda.comentarios.length === 0) {
+        lista_comentarios.innerHTML = "<p class='apoio'>Nenhum comentario ainda.</p>"
+    }
+
     demanda.comentarios.forEach((c) => {
         const div = document.createElement("div")
         div.className = "comentario"
@@ -59,6 +96,10 @@ function mostrar(dados) {
     // Historico, do mais recente para o mais antigo
     lista_historico.innerHTML = ""
 
+    if (demanda.historico.length === 0) {
+        lista_historico.innerHTML = "<p class='apoio'>Nenhuma alteracao registrada.</p>"
+    }
+
     demanda.historico.forEach((h) => {
         const li = document.createElement("li")
         li.innerHTML = h.texto + "<span class='data'>" + h.autor + " - " + h.data + "</span>"
@@ -68,13 +109,20 @@ function mostrar(dados) {
 
 // Busca os dados no servidor quando a pagina abre
 async function carregar() {
-    const resposta = await fetch("/api/demanda")
-    mostrar(await resposta.json())
+    const resposta = await fetch("/api/demanda/" + id)
+    const dados = await resposta.json()
+
+    if (dados.erro) {
+        titulo.textContent = dados.erro
+        return
+    }
+
+    mostrar(dados)
 }
 
 // Muda o status da demanda
 async function mudarStatus(status) {
-    const resposta = await fetch("/api/status", {
+    const resposta = await fetch("/api/demanda/" + id + "/status", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: status })
@@ -105,7 +153,7 @@ form_comentario.addEventListener("submit", async (e) => {
         return
     }
 
-    const resposta = await fetch("/api/comentarios", {
+    const resposta = await fetch("/api/demanda/" + id + "/comentarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ texto: campo_comentario.value })
