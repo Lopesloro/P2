@@ -58,6 +58,21 @@ function agora() {
     return d.toLocaleDateString("pt-BR") + " as " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
 }
 
+// Liga a tela de listagem a esta tela.
+//
+// Cada linha da listagem tem um link "Detalhes" apontando para
+// produtodetalhes.html, um arquivo que nunca existiu no projeto. Como
+// aquela tela nao e minha, em vez de alterar o arquivo dela eu atendo esse
+// endereco aqui e mando o navegador para a tela de Detalhes.
+//
+// O link da listagem nao informa qual demanda foi clicada, entao todas as
+// linhas caem na primeira. Para cada linha abrir a sua propria demanda, o
+// link de la precisa virar detalhes.demanda.html?id=1, com o numero da
+// linha correspondente.
+rotas.get("/produtodetalhes.html", (req, res) => {
+    res.redirect("/detalhes.demanda.html?id=1")
+})
+
 // Envia a demanda para a tela
 rotas.get("/api/demanda/:id", (req, res) => {
     const demanda = procurar(req.params.id)

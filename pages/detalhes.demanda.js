@@ -44,9 +44,7 @@ function mostrar(dados) {
     const campos = [
         ["Numero", "#" + demanda.id],
         ["Projeto", demanda.projeto],
-        ["Responsavel", demanda.responsavel],
-        ["Data de criacao", demanda.criacao],
-        ["Prazo", demanda.prazo]
+        ["Responsavel", demanda.responsavel]
     ]
 
     campos.forEach((campo) => {
@@ -163,11 +161,18 @@ form_comentario.addEventListener("submit", async (e) => {
     mostrar(await resposta.json())
 })
 
-// Volta para a tela anterior. O history.back leva de volta de onde a
-// pessoa veio. Quando nao ha tela anterior, porque a pagina foi aberta
-// direto por um link, o link da listagem e usado como destino.
+// Volta para a tela anterior.
+//
+// O document.referrer guarda o endereco da pagina de onde a pessoa veio.
+// Se ela veio de outra tela do sistema, o history.back devolve exatamente
+// para la, ja na posicao em que estava.
+//
+// Quando a pessoa abre esta tela direto, digitando o endereco ou por um
+// link colado, o referrer vem vazio. Nesse caso o clique nao e
+// interceptado e o navegador segue o link normal do botao, que aponta
+// para a listagem.
 voltar.addEventListener("click", (e) => {
-    if (history.length > 1) {
+    if (document.referrer.includes(window.location.host)) {
         e.preventDefault()
         history.back()
     }
