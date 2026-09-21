@@ -16,7 +16,6 @@ const lista_historico = document.querySelector("#lista_historico")
 const form_comentario = document.querySelector("#form_comentario")
 const campo_comentario = document.querySelector("#comentario")
 const erro_comentario = document.querySelector("#erro_comentario")
-const voltar = document.querySelector("#voltar")
 
 // Numero da demanda, lido do endereco da pagina:
 // detalhes-demanda.html?id=3 abre a terceira demanda da listagem.
@@ -110,8 +109,12 @@ async function carregar() {
     const resposta = await fetch("/api/demanda/" + id)
     const dados = await resposta.json()
 
+    // Sem demanda para mostrar, a tela explica o motivo e esconde o resto,
+    // em vez de ficar cheia de espacos em branco
     if (dados.erro) {
         titulo.textContent = dados.erro
+        document.querySelector(".colunas").style.display = "none"
+        document.querySelector(".etiquetas").style.display = "none"
         return
     }
 
@@ -159,23 +162,6 @@ form_comentario.addEventListener("submit", async (e) => {
 
     campo_comentario.value = ""
     mostrar(await resposta.json())
-})
-
-// Volta para a tela anterior.
-//
-// O document.referrer guarda o endereco da pagina de onde a pessoa veio.
-// Se ela veio de outra tela do sistema, o history.back devolve exatamente
-// para la, ja na posicao em que estava.
-//
-// Quando a pessoa abre esta tela direto, digitando o endereco ou por um
-// link colado, o referrer vem vazio. Nesse caso o clique nao e
-// interceptado e o navegador segue o link normal do botao, que aponta
-// para a listagem.
-voltar.addEventListener("click", (e) => {
-    if (document.referrer.includes(window.location.host)) {
-        e.preventDefault()
-        history.back()
-    }
 })
 
 carregar()

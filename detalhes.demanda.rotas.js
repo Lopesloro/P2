@@ -1,5 +1,5 @@
 // Autor do arquivo: Gabriel Lopes Londe Rodrigues
-// Rotas da tela de Detalhes da Demanda
+// Rotas do sistema de demandas
 
 import { Router } from "express"
 
@@ -8,33 +8,41 @@ import { Router } from "express"
 // outro integrante da equipe.
 export const rotas = Router()
 
-// Nome de quem esta usando o sistema
+// Nome de quem esta usando o sistema. Quando a tela de login estiver
+// ligada, este nome passa a vir de la.
 const usuario = "Eduardo Martins Colmati"
 
-// As demandas sao as mesmas seis que aparecem na tela de listagem, com os
-// mesmos valores de exemplo. Elas ficam nesta variavel porque o projeto
-// ainda nao tem banco de dados, entao ao desligar o servidor os dados
-// voltam a ser estes.
+// Aqui ficam as demandas do sistema.
 //
-// O campo status e o unico que nao copia a listagem. La ele tambem esta
-// escrito "Exemplo A", mas aqui ele precisa de um valor de verdade, senao
-// nao da para conferir o ciclo de vida da demanda mais abaixo.
+// A lista comeca VAZIA de proposito. Nao ha nenhuma demanda de exemplo
+// escrita no codigo: tudo o que aparecer nas telas vai ter entrado pela
+// rota de cadastro, POST /api/demandas.
 //
-// Os comentarios e o historico comecam vazios: a listagem nao tem essas
-// informacoes, entao nao havia de onde tira-las.
-const demandas = [
-    { id: 1, titulo: "Exemplo A", tipo: "Exemplo A", prioridade: "Exemplo A", status: "Aberta", projeto: "Exemplo A", responsavel: "Exemplo A", criacao: "Exemplo A", prazo: "Exemplo A", descricao: "Exemplo A", comentarios: [], historico: [] },
-    { id: 2, titulo: "Exemplo B", tipo: "Exemplo B", prioridade: "Exemplo B", status: "Em andamento", projeto: "Exemplo B", responsavel: "Exemplo B", criacao: "Exemplo B", prazo: "Exemplo B", descricao: "Exemplo B", comentarios: [], historico: [] },
-    { id: 3, titulo: "Exemplo C", tipo: "Exemplo C", prioridade: "Exemplo C", status: "Em revisao", projeto: "Exemplo C", responsavel: "Exemplo C", criacao: "Exemplo C", prazo: "Exemplo C", descricao: "Exemplo C", comentarios: [], historico: [] },
-    { id: 4, titulo: "Exemplo D", tipo: "Exemplo D", prioridade: "Exemplo D", status: "Concluida", projeto: "Exemplo D", responsavel: "Exemplo D", criacao: "Exemplo D", prazo: "Exemplo D", descricao: "Exemplo D", comentarios: [], historico: [] },
-    { id: 5, titulo: "Exemplo E", tipo: "Exemplo E", prioridade: "Exemplo E", status: "Cancelada", projeto: "Exemplo E", responsavel: "Exemplo E", criacao: "Exemplo E", prazo: "Exemplo E", descricao: "Exemplo E", comentarios: [], historico: [] },
-    { id: 6, titulo: "Exemplo F", tipo: "Exemplo F", prioridade: "Exemplo F", status: "Aberta", projeto: "Exemplo F", responsavel: "Exemplo F", criacao: "Exemplo F", prazo: "Exemplo F", descricao: "Exemplo F", comentarios: [], historico: [] }
-]
+// A lista fica em uma variavel porque o projeto ainda nao tem banco de
+// dados. Ao reiniciar o servidor ela volta a ficar vazia.
+const demandas = []
+
+// Numero da proxima demanda. Faz o papel que o banco de dados fara
+// sozinho mais adiante, com a numeracao automatica.
+let proximoNumero = 1
 
 // Ordem do ciclo de vida, definida no Documento de Visao.
 // A demanda nao pode pular etapas: para ser concluida ela precisa passar
 // por Em revisao. Cancelar encerra a demanda a partir de qualquer ponto.
 const ordem = ["Aberta", "Em andamento", "Em revisao", "Concluida"]
+
+/**
+ * Tira os acentos de um texto.
+ *
+ * Por que isso e necessario: a tela de cadastro escreve os status com
+ * acento, como "Em revisão" e "Concluída", e as minhas regras usam sem
+ * acento. Sem esta funcao, um status vindo de la nao seria reconhecido e
+ * a demanda seria recusada. Assim os dois lados combinam sem ninguem
+ * precisar mudar a sua tela.
+ */
+function semAcento(texto) {
+    return String(texto).normalize("NFD").replace(/[̀-ͯ]/g, "")
+}
 
 // Diz para quais status a demanda pode ir a partir do status atual
 function proximosStatus(atual) {
@@ -58,26 +66,99 @@ function agora() {
     return d.toLocaleDateString("pt-BR") + " as " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
 }
 
-// Liga a tela de listagem a esta tela.
-//
-// Cada linha da listagem tem um link "Detalhes" apontando para
-// produtodetalhes.html, um arquivo que nunca existiu no projeto. Como
-// aquela tela nao e minha, em vez de alterar o arquivo dela eu atendo esse
-// endereco aqui e mando o navegador para a tela de Detalhes.
-//
-// O link da listagem nao informa qual demanda foi clicada, entao todas as
-// linhas caem na primeira. Para cada linha abrir a sua propria demanda, o
-// link de la precisa virar detalhes.demanda.html?id=1, com o numero da
-// linha correspondente.
+/* ---------------------------------------------------------------------
+   LIGACAO ENTRE A LISTAGEM E ESTA TELA
+
+   Cada linha da listagem tem um link "Detalhes" apontando para
+   produtodetalhes.html, um arquivo que nunca existiu no projeto. Como
+   aquela tela nao e minha, em vez de alterar o arquivo dela eu atendo
+   esse endereco aqui e mando o navegador para a tela de Detalhes.
+
+   O link de la ainda nao informa qual demanda foi clicada. Quando
+   informar, no formato detalhes.demanda.html?id=1, esta ponte deixa de
+   ser necessaria.
+   --------------------------------------------------------------------- */
 rotas.get("/produtodetalhes.html", (req, res) => {
-    res.redirect("/detalhes.demanda.html?id=1")
+    res.redirect("/detalhes.demanda.html")
 })
 
-// Envia a demanda para a tela
+/* ---------------------------------------------------------------------
+   ROTAS PARA A TELA DE LISTAGEM
+   --------------------------------------------------------------------- */
+
+// Devolve todas as demandas, para a listagem montar a tabela
+rotas.get("/api/demandas", (req, res) => {
+    res.json({ total: demandas.length, demandas: demandas })
+})
+
+/* ---------------------------------------------------------------------
+   ROTA PARA A TELA DE CADASTRO
+
+   E por aqui que as demandas entram no sistema.
+   --------------------------------------------------------------------- */
+rotas.post("/api/demandas", (req, res) => {
+    const corpo = req.body
+
+    // O titulo aceita os dois nomes porque a tela de cadastro chama o
+    // campo de "nome" e o resto do sistema chama de "titulo"
+    const titulo = String(corpo.titulo || corpo.nome || "").trim()
+    const descricao = String(corpo.descricao || "").trim()
+    const projeto = String(corpo.projeto || corpo.associado || "").trim()
+
+    if (titulo === "") {
+        return res.status(400).json({ erro: "Informe o titulo da demanda." })
+    }
+
+    if (descricao === "") {
+        return res.status(400).json({ erro: "Informe a descricao da demanda." })
+    }
+
+    // Toda demanda nasce Aberta, salvo se a tela mandar outro status
+    const status = corpo.status ? semAcento(corpo.status) : "Aberta"
+
+    if (!ordem.includes(status) && status !== "Cancelada") {
+        return res.status(400).json({ erro: "Status desconhecido: " + corpo.status })
+    }
+
+    const demanda = {
+        id: proximoNumero,
+        titulo: titulo,
+        descricao: descricao,
+        projeto: projeto,
+        tipo: corpo.tipo ? String(corpo.tipo) : "",
+        prioridade: corpo.prioridade ? String(corpo.prioridade) : "",
+        status: status,
+        responsavel: corpo.responsavel ? String(corpo.responsavel) : "",
+        prazo: corpo.prazo ? String(corpo.prazo) : "",
+        criacao: agora(),
+        comentarios: [],
+        historico: [
+            { texto: "Demanda cadastrada no sistema", autor: usuario, data: agora() }
+        ]
+    }
+
+    demandas.push(demanda)
+    proximoNumero = proximoNumero + 1
+
+    res.status(201).json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
+})
+
+/* ---------------------------------------------------------------------
+   ROTAS PARA A TELA DE DETALHES
+   --------------------------------------------------------------------- */
+
+// Envia uma demanda para a tela
 rotas.get("/api/demanda/:id", (req, res) => {
     const demanda = procurar(req.params.id)
 
     if (!demanda) {
+
+        // Mensagem diferente quando ainda nao ha nenhuma demanda, para a
+        // pessoa entender que falta cadastrar, e nao que houve um erro
+        if (demandas.length === 0) {
+            return res.status(404).json({ erro: "Nenhuma demanda cadastrada ainda." })
+        }
+
         return res.status(404).json({ erro: "Demanda nao encontrada." })
     }
 
@@ -106,11 +187,12 @@ rotas.post("/api/demanda/:id/comentarios", (req, res) => {
 // Muda o status da demanda
 rotas.patch("/api/demanda/:id/status", (req, res) => {
     const demanda = procurar(req.params.id)
-    const novo = req.body.status
 
     if (!demanda) {
         return res.status(404).json({ erro: "Demanda nao encontrada." })
     }
+
+    const novo = semAcento(req.body.status || "")
 
     // A tela ja mostra so os botoes permitidos, mas a conferencia e feita
     // aqui tambem: quem chamar a rota por fora do navegador fica barrado
@@ -125,6 +207,42 @@ rotas.patch("/api/demanda/:id/status", (req, res) => {
     })
 
     demanda.status = novo
+
+    res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
+})
+
+/* ---------------------------------------------------------------------
+   ROTA PARA A TELA DE EDICAO
+   --------------------------------------------------------------------- */
+
+// Altera os dados da demanda. O status nao muda por aqui: ele tem regras
+// proprias e usa a rota de status logo acima.
+rotas.put("/api/demanda/:id", (req, res) => {
+    const demanda = procurar(req.params.id)
+    const corpo = req.body
+
+    if (!demanda) {
+        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    }
+
+    const campos = ["titulo", "descricao", "projeto", "tipo", "prioridade", "responsavel", "prazo"]
+
+    campos.forEach((campo) => {
+
+        // So altera o que a tela enviou, deixando o resto como estava
+        if (corpo[campo] !== undefined) {
+            const valor = String(corpo[campo])
+
+            if (demanda[campo] !== valor) {
+                demanda.historico.unshift({
+                    texto: "Campo " + campo + " alterado",
+                    autor: usuario,
+                    data: agora()
+                })
+                demanda[campo] = valor
+            }
+        }
+    })
 
     res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
 })

@@ -92,10 +92,10 @@ main {
     padding: 24px 20px;
 }
 
-#voltar {
-    color: var(--azul);
-    font-size: 13px;
-    font-weight: bold;
+/* Botao de voltar para a listagem, acima do titulo */
+.voltar {
+    display: inline-block;
+    margin-bottom: 12px;
 }
 
 h1 {
